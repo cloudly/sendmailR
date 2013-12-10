@@ -91,7 +91,9 @@
   send_command(paste("MAIL FROM: ", headers$From), 250)
   ## >> RCPT TO: <bah@baz.org>
   ## << 250 2.1.5 Ok
-  send_command(paste("RCPT TO: ", headers$To), 250)
+  lapply(headers$To, function(rcpt){
+    send_command(paste("RCPT TO: ", to), 250)
+  })
   ## >> DATA
   ## << 354 blah fu
   send_command("DATA", 354)
@@ -131,7 +133,7 @@
 ##' @examples
 ##' \dontrun{
 ##' from <- sprintf("<sendmailR@@\\%s>", Sys.info()[4])
-##' to <- "<olafm@@datensplitter.net>"
+##' to <- "\"Olaf Mersmann\"<olafm@@datensplitter.net>"
 ##' subject <- "Hello from R"
 ##' body <- list("It works!", mime_part(iris))
 ##' sendmail(from, to, subject, body,
@@ -146,9 +148,6 @@ sendmail <- function(from, to, subject, msg, ...,
   stopifnot(is.list(headers), is.list(control))
   if (length(from) != 1)
     stop("'from' must be a single address.")
-  
-  if (length(to) != 1)
-    stop("'to' must be a single address.")
   
   get_value <- function(n, default="") {
     if (n %in% names(control)) {
