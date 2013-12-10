@@ -92,7 +92,7 @@
   ## >> RCPT TO: <bah@baz.org>
   ## << 250 2.1.5 Ok
   lapply(headers$To, function(rcpt){
-    send_command(paste("RCPT TO: ", to), 250)
+    send_command(paste("RCPT TO: ", rcpt), 250)
   })
   ## >> DATA
   ## << 354 blah fu
